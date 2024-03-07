@@ -21,6 +21,8 @@ import java.net.Socket;
 public class MainActivity extends AppCompatActivity {
     private EditText inputField;
     private TextView resultTextView;
+    private Button conv;
+    private TextView convTextView;
 
 
     @Override
@@ -36,7 +38,21 @@ public class MainActivity extends AppCompatActivity {
         inputField = findViewById(R.id.matrikelnr1);
         Button send = findViewById(R.id.button1);
         resultTextView = findViewById(R.id.textView4);
+        conv = findViewById(R.id.button2);
+        convTextView = findViewById(R.id.textView5);
 
+        conv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String input = inputField.getText().toString();
+                if (input.matches("[0-9]+")) {
+                    String convertedMatrikelnummer = convertMatrikelnummer(input);
+                    convTextView.setText(convertedMatrikelnummer);
+                } else {
+                    convTextView.setText("Bitte geben Sie nur Zahlen ein.");
+                }
+            }
+        });
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,5 +92,18 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+    private String convertMatrikelnummer(String matrikelnummer) {
+        char[] charArray = matrikelnummer.toCharArray();
+
+        for (int i = 0; i < charArray.length; i++) {
+            if (i % 2 == 1) {
+                char digit = charArray[i];
+                int ascii = Character.getNumericValue(digit) + 'a';
+                char convert = (char) ascii;
+                charArray[i] = convert;
+            }
+        }
+        return new String(charArray);
     }
 }

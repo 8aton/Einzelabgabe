@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Einzelabgabe</string>
+    <string name="gib_deine_matrikelnummer_ein">Gib deine Matrikelnummer ein!</string>
+    <string name="matrikelnummer">Matrikelnummer</string>
+    <string name="antwort_vom_server">Antwort vom Server</string>
+    <string name="abschicken">ABSCHICKEN</string>
+    <string name="umwandeln">UMWANDELN</string>
+    <string name="umwandlung">Umwandlung</string>
 </resources>
