@@ -35,12 +35,15 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        //Elemente werden den Variablen zugewiesen
         inputField = findViewById(R.id.matrikelnr1);
         Button send = findViewById(R.id.button1);
         resultTextView = findViewById(R.id.textView4);
         conv = findViewById(R.id.button2);
         convTextView = findViewById(R.id.textView5);
 
+        //Button reagiert auf clicks, input in String umwandeln, input überprüfen, konvertieren und anzeigen
+        //Sonst Fehlermeldung
         conv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,31 +61,38 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String input = inputField.getText().toString();
                 if (input.matches("[0-9]+")) {
+                    //Neuer Thread wird gestartet, um Netzwerkanfragen nicht im Haupt-Thread durchzuführen
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
                             try {
+                                //Verbindung zum Server herstellen
                                 Socket s = new Socket("se2-submission.aau.at", 20080);
+                                //für Ausgabe auf dem Socket
                                 BufferedWriter output = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
-
+                                // Input an den Server senden
                                 output.write(input);
                                 output.newLine();
                                 output.flush();
-
+                                //für Eingabe vom Socket
                                 BufferedReader input = new BufferedReader(new InputStreamReader(s.getInputStream()));
                                 StringBuilder result = new StringBuilder();
                                 String line;
+                                //Antwort des Servers wird gelesen und in StringBuilder gespeichert
                                 while ((line = input.readLine()) != null) {
                                     result.append(line);
                                 }
+                                //Benutzeroberfläche wird im Haupt-Thread aktualisiert, um UI-Änderungen durchzuführen
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         resultTextView.setText(result.toString());
                                     }
                                 });
+                                //Socket-Verbindung schließen
                                 s.close();
                             } catch (Exception e) {
+                                //falls Fehler auftreten
                                 e.printStackTrace();
                             }
                         }
@@ -94,8 +104,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     private String convertMatrikelnummer(String matrikelnummer) {
+        //Umwandlung in charArray
         char[] charArray = matrikelnummer.toCharArray();
-
+        //wenn position im array ungerade -> umwandlung in ascii
         for (int i = 0; i < charArray.length; i++) {
             if (i % 2 == 1) {
                 char digit = charArray[i];
@@ -104,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 charArray[i] = convert;
             }
         }
+        //Umwandlung in String
         return new String(charArray);
     }
 }
